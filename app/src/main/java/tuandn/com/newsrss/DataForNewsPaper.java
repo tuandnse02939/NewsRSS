@@ -6,12 +6,22 @@ package tuandn.com.newsrss;
 public class DataForNewsPaper {
     private int banner;
     private String[] listCategory;
+    private String newspaperName;
 
     private static DataForNewsPaper instance;
 
-    public DataForNewsPaper(int banner, String[] listCategory) {
+    public DataForNewsPaper(int banner, String[] listCategory, String name) {
         this.banner = banner;
         this.listCategory = listCategory;
+        this.newspaperName = name;
+    }
+
+    public static DataForNewsPaper getInstance() {
+        if (null == instance) {
+            instance = new DataForNewsPaper();
+        }
+
+        return instance;
     }
 
     public int getBanner() {
@@ -34,14 +44,13 @@ public class DataForNewsPaper {
         this.listCategory = listCategory;
     }
 
-    public static DataForNewsPaper getInstance() {
-        if (null == instance) {
-            instance = new DataForNewsPaper();
-        }
-
-        return instance;
+    public String getNewspaperName() {
+        return newspaperName;
     }
 
+    public void setNewspaperName(String newspaperName) {
+        this.newspaperName = newspaperName;
+    }
 
     public DataForNewsPaper() {
     }

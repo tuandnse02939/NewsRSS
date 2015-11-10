@@ -51,12 +51,17 @@ public class ListNewsAdapter implements ListAdapter{
 
     @Override
     public int getCount() {
-        return data.getChannel().getItem().size();
+        return data.getChannel() != null ? data.getChannel().getItem().size() : 0;
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Item getItem(int position) {
+        if (data != null && data.getChannel().getItem().size() - 1 >= position && position >= 0) {
+            return data.getChannel().getItem().get(position);
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -86,7 +91,9 @@ public class ListNewsAdapter implements ListAdapter{
         }
         Item news = data.getChannel().getItem().get(position);
         holder.tvNewsTitle.setText(news.getTitle());
-        holder.tvNewsContent.setText(news.getDescription());
+        int i = news.getDescription().indexOf("</br>");
+        String description = news.getDescription().substring(i+5, news.getDescription().length());
+        holder.tvNewsContent.setText(description);
         holder.tvNewsTime.setText(news.getPubDate());
 
         return convertView;
