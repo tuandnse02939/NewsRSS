@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_vnexpress" android:icon="@drawable/ic_vnexpress"
+            android:title="VnExpress" />
+        <item android:id="@+id/nav_dantri" android:icon="@drawable/ic_dantri"
+            android:title="Dân trí" />
+        <item android:id="@+id/nav_24h" android:icon="@drawable/ic_24h"
+            android:title="24h" />
+        <item android:id="@+id/nav_bongdaplus"
+            android:icon="@drawable/ic_bongdaplus"
+            android:title="Bongda Plus" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+        </menu>
+    </item>
+
+</menu>
