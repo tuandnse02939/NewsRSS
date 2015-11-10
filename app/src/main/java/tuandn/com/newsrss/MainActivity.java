@@ -17,9 +17,14 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String CATEGORY_VnExpress[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Kinh doanh"};
-    public static String CATEGORY_Dantri[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Đời sống"};
-    public static String CATEGORY_24h[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Đời sống"};
+    public static String CATEGORY_Dantri[] = {"1","2"};
+    public static String CATEGORY_24h[] = {"3","4"};
     public static String CATEGORY_BongdaPlus[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Đời sống"};
+
+    public static String VNEXPRESS = "VNEXPRESS";
+    public static String DANTRI = "DANTRI";
+    public static String ONLINE24H = "ONLINE24H";
+    public static String BONGDAPLUS = "BONGDAPLUS";
 
     private FragmentManager fragmentManager;
     private Fragment targetFragment;
@@ -79,21 +84,25 @@ public class MainActivity extends AppCompatActivity
             targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
             dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
+            dataForNewsPaper.setNewspaperName(VNEXPRESS);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_dantri) {
             targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_dantri);
             dataForNewsPaper.setListCategory(CATEGORY_Dantri);
+            dataForNewsPaper.setNewspaperName(DANTRI);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_24h) {
             targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_24h);
             dataForNewsPaper.setListCategory(CATEGORY_24h);
+            dataForNewsPaper.setNewspaperName(ONLINE24H);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_bongdaplus) {
             targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_bongdaplus);
             dataForNewsPaper.setListCategory(CATEGORY_BongdaPlus);
+            dataForNewsPaper.setNewspaperName(BONGDAPLUS);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         }
 
