@@ -59,4 +59,12 @@ public class Item {
     public String getComments() {
         return comments;
     }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 }

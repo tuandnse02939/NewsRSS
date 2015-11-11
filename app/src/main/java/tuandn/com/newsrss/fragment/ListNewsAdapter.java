@@ -10,6 +10,8 @@ import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import tuandn.com.newsrss.R;
@@ -95,7 +97,9 @@ public class ListNewsAdapter implements ListAdapter{
         String description = i>0 ? news.getDescription().substring(i+5, news.getDescription().length()) : "";
         holder.tvNewsContent.setText(description);
         holder.tvNewsTime.setText(news.getPubDate());
-
+        if(!news.getGuid().equals("")) {
+            Picasso.with(context).load(news.getGuid()).into(holder.ivImage);
+        }
         return convertView;
     }
 

@@ -18,6 +18,7 @@ import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
 import tuandn.com.newsrss.vnexpress.ApiInterface;
+import tuandn.com.newsrss.vnexpress.Item;
 import tuandn.com.newsrss.vnexpress.Rss;
 
 /**
@@ -127,7 +128,22 @@ public class NewsFragment extends Fragment {
             public void onResponse(Response<Rss> response, Retrofit retrofit) {
                 if (response.isSuccess()) {
 //                    EventBus.getDefault().post(response.body());
-                    mAdapter = new ListNewsAdapter(getContext(),response.body());
+                    Rss rss = response.body();
+                    for(Item item : rss.getChannel().getItem()){
+                        int i = item.getDescription().indexOf("src") + 5;
+                        int j = item.getDescription().indexOf(".jpg") + 4;
+                        if(j == 3) {
+                            j = item.getDescription().indexOf(".jpeg") + 5;
+                            if(j == 4){
+                                j = item.getDescription().indexOf(".png") + 4;
+                            }
+                        }
+                        String imageUrl = "";
+                        if(i !=4 && j != 3){
+                        imageUrl = item.getDescription().substring(i, j);}
+                        item.setGuid(imageUrl);
+                    }
+                    mAdapter = new ListNewsAdapter(getContext(),rss);
                     mLvNew.setAdapter(mAdapter);
                 } else {
                 }
@@ -151,6 +167,7 @@ public class NewsFragment extends Fragment {
         args.putInt("position", position);
         NewsFragment fragment = new NewsFragment();
         fragment.setArguments(args);
+        fragment.setRetainInstance(true);
         return fragment;
     }
 
