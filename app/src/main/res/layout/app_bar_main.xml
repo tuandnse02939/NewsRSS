@@ -28,4 +28,10 @@
         android:id="@+id/layout_content">
     </FrameLayout>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_welcome"
+        android:visibility="gone"/>
+
 </android.support.design.widget.CoordinatorLayout>

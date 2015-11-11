@@ -46,6 +46,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
+
+        targetFragment = new NewsPaperFragment();
+        DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
+        dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
+        dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
+        dataForNewsPaper.setNewspaperName(VNEXPRESS);
+        fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
     }
 
     @Override

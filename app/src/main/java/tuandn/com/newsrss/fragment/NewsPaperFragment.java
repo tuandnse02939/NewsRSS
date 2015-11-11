@@ -21,6 +21,8 @@ import tuandn.com.newsrss.R;
 public class NewsPaperFragment extends Fragment {
 
     private int banner;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @Nullable
     @Override
@@ -32,11 +34,8 @@ public class NewsPaperFragment extends Fragment {
         ImageView ivBanner = (ImageView) rootView.findViewById(R.id.banner);
         ivBanner.setBackground(getResources().getDrawable(banner));
 
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
-        ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new NewsFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity()));
-        viewPager.setCurrentItem(0);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
 
         return rootView;
     }
@@ -44,6 +43,9 @@ public class NewsPaperFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        viewPager.setAdapter(new NewsFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity()));
+        viewPager.setCurrentItem(0);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
