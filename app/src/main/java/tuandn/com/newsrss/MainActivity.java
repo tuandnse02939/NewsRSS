@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String CATEGORY_VnExpress[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Kinh doanh"};
-    public static String CATEGORY_Dantri[] = {"1","2"};
+    public static String CATEGORY_Dantri[] = {"Trang chủ","Sức khỏe","Xã hội", "Giải trí", "Giáo dục", "Thể thao", "Thế giới", "Kinh doanh" };
     public static String CATEGORY_24h[] = {"3","4"};
     public static String CATEGORY_BongdaPlus[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Đời sống"};
 

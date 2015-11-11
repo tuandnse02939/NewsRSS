@@ -46,113 +46,102 @@ public class NewsFragment extends Fragment {
         mLvNew = (ListView) rootView.findViewById(R.id.lvListNew);
 
         rss = new Rss();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://vnexpress.net")
-                .addConverterFactory(SimpleXmlConverterFactory.create())
-                .build();
+
 
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
         String newspaperName = dataForNewsPaper.getNewspaperName();
 
         position = getArguments().getInt("position");
 
-        ApiInterface api = retrofit.create(ApiInterface.class);
+
         if(newspaperName.equals(MainActivity.VNEXPRESS)) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://vnexpress.net")
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            ApiInterface api = retrofit.create(ApiInterface.class);
             switch (position) {
                 case NEWEST:
-                    call = api.getNewestRss();
+                    call = api.getNewestRssVnexpress();
                     break;
                 case HEADLINE:
-                    call = api.getHeadlineRss();
+                    call = api.getHeadlineRssVnexpress();
                     break;
                 case WORLD:
-                    call = api.getWorldRss();
+                    call = api.getWorldRssVnexpress();
                     break;
                 case BUSINESS:
-                    call = api.getBussinessRss();
+                    call = api.getBussinessRssVnexpress();
                     break;
                 default:
-                    call = api.getNewestRss();
+                    call = api.getNewestRssVnexpress();
                     break;
             }
 
-            // Asynchronous
-            call.enqueue(new Callback<Rss>() {
-
-                @Override
-                public void onResponse(Response<Rss> response, Retrofit retrofit) {
-                    if (response.isSuccess()) {
-//                    EventBus.getDefault().post(response.body());
-                        mAdapter = new ListNewsAdapter(getContext(),response.body());
-                        mLvNew.setAdapter(mAdapter);
-                    } else {
-                    }
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    System.out.println("Loi: " + t.getMessage());
-                }
-            });
-
-            rss = new Rss();
-            mAdapter = new ListNewsAdapter(getContext(),rss);
-            mLvNew.setAdapter(mAdapter);
         } else if(newspaperName.equals(MainActivity.DANTRI)){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://dantri.com.vn")
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            ApiInterface api = retrofit.create(ApiInterface.class);
             switch (position) {
                 case NEWEST:
-                    call = api.getNewestRss();
+                    call = api.getTrangchuDantri();
                     break;
                 case HEADLINE:
-                    call = api.getHeadlineRss();
+                    call = api.getSuckhoeDantri();
                     break;
                 case WORLD:
-                    call = api.getWorldRss();
+                    call = api.getXahoiDantri();
                     break;
                 case BUSINESS:
-                    call = api.getBussinessRss();
+                    call = api.getGiaitriDantri();
+                    break;
+                case 4:
+                    call = api.getGiaoducDantri();
+                    break;
+                case 5:
+                    call = api.getTheothaoDantri();
+                    break;
+                case 6:
+                    call = api.getThegioiDantri();
+                    break;
+                case 7:
+                    call = api.getKinhdoanhDantri();
                     break;
                 default:
-                    call = api.getNewestRss();
+                    call = api.getTrangchuDantri();
                     break;
             }
         } else if(newspaperName.equals(MainActivity.ONLINE24H)){
-            switch (position) {
-                case NEWEST:
-                    call = api.getNewestRss();
-                    break;
-                case HEADLINE:
-                    call = api.getHeadlineRss();
-                    break;
-                case WORLD:
-                    call = api.getWorldRss();
-                    break;
-                case BUSINESS:
-                    call = api.getBussinessRss();
-                    break;
-                default:
-                    call = api.getNewestRss();
-                    break;
-            }
+
         } else if(newspaperName.equals(MainActivity.BONGDAPLUS)){
-            switch (position) {
-                case NEWEST:
-                    call = api.getNewestRss();
-                    break;
-                case HEADLINE:
-                    call = api.getHeadlineRss();
-                    break;
-                case WORLD:
-                    call = api.getWorldRss();
-                    break;
-                case BUSINESS:
-                    call = api.getBussinessRss();
-                    break;
-                default:
-                    call = api.getNewestRss();
-                    break;
-            }
+
         }
+
+
+        // Asynchronous
+        call.enqueue(new Callback<Rss>() {
+
+            @Override
+            public void onResponse(Response<Rss> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+//                    EventBus.getDefault().post(response.body());
+                    mAdapter = new ListNewsAdapter(getContext(),response.body());
+                    mLvNew.setAdapter(mAdapter);
+                } else {
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println("Loi: " + t.getMessage());
+            }
+        });
+
+        rss = new Rss();
+        mAdapter = new ListNewsAdapter(getContext(),rss);
+        mLvNew.setAdapter(mAdapter);
 
         return rootView;
     }

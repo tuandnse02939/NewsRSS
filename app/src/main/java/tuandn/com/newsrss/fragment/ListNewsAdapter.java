@@ -92,7 +92,7 @@ public class ListNewsAdapter implements ListAdapter{
         Item news = data.getChannel().getItem().get(position);
         holder.tvNewsTitle.setText(news.getTitle());
         int i = news.getDescription().indexOf("</br>");
-        String description = news.getDescription().substring(i+5, news.getDescription().length());
+        String description = i>0 ? news.getDescription().substring(i+5, news.getDescription().length()) : "";
         holder.tvNewsContent.setText(description);
         holder.tvNewsTime.setText(news.getPubDate());
 

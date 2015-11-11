@@ -35,6 +35,7 @@ public class NewsPaperFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         viewPager.setAdapter(new NewsFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity()));
+        viewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(viewPager);
 
         return rootView;
@@ -43,5 +44,10 @@ public class NewsPaperFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 }
