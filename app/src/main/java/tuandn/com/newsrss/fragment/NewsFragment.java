@@ -17,9 +17,9 @@ import retrofit.SimpleXmlConverterFactory;
 import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
-import tuandn.com.newsrss.entity.ApiInterface;
-import tuandn.com.newsrss.entity.Item;
-import tuandn.com.newsrss.entity.Rss;
+import tuandn.com.newsrss.vnexpress.ApiInterface;
+import tuandn.com.newsrss.vnexpress.Item;
+import tuandn.com.newsrss.vnexpress.Rss;
 
 /**
  * Created by Anh Trung on 11/9/2015.
