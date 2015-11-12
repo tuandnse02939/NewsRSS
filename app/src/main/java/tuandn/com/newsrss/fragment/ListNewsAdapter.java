@@ -95,11 +95,20 @@ public class ListNewsAdapter implements ListAdapter{
         holder.tvNewsContent.setText(Html.fromHtml(news.getDescription()));
         holder.tvNewsTime.setText(news.getPubDate());
         if(news.getSummaryImg() != null && !news.getSummaryImg().equals("")){
-            Picasso.with(context).load(news.getSummaryImg()).into(holder.ivImage);
+            Picasso.with(context).load(news.getSummaryImg())
+                    .resize(100, 100)
+                    .centerCrop()
+                    .into(holder.ivImage);
         } else if(news.getImage() != null && !news.getImage().equals("")){
-            Picasso.with(context).load(news.getImage()).into(holder.ivImage);
+            Picasso.with(context).load(news.getImage())
+                    .resize(100, 100)
+                    .centerCrop()
+                    .into(holder.ivImage);
         } else if(!news.getGuid().equals("")) {
-            Picasso.with(context).load(news.getGuid()).into(holder.ivImage);
+            Picasso.with(context).load(news.getGuid())
+                    .resize(100, 100)
+                    .centerCrop()
+                    .into(holder.ivImage);
         }
         return convertView;
     }
