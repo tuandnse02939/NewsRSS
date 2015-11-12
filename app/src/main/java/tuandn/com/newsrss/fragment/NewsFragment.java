@@ -116,7 +116,7 @@ public class NewsFragment extends Fragment {
             }
         } else if(newspaperName.equals(MainActivity.ONLINE24H)){
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://www.24h.com.vn/upload/rss")
+                    .baseUrl("http://24h.com.vn")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
                     .build();
             ApiInterface api = retrofit.create(ApiInterface.class);
@@ -148,7 +148,7 @@ public class NewsFragment extends Fragment {
             }
         } else if(newspaperName.equals(MainActivity.VIETNAMNET)){
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://vietnamnet.vn/rss/")
+                    .baseUrl("http://vietnamnet.vn/")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
                     .build();
             ApiInterface api = retrofit.create(ApiInterface.class);
@@ -206,6 +206,7 @@ public class NewsFragment extends Fragment {
                     mAdapter = new ListNewsAdapter(getContext(),rss);
                     mLvNew.setAdapter(mAdapter);
                 } else {
+                    System.out.println("Loi: " + response.toString());
                 }
             }
 

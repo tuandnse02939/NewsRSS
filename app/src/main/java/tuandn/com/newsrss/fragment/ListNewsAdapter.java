@@ -91,7 +91,7 @@ public class ListNewsAdapter implements ListAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
         Item news = data.getChannel().getItem().get(position);
-        holder.tvNewsTitle.setText(news.getTitle());
+        holder.tvNewsTitle.setText(Html.fromHtml(news.getTitle()));
         holder.tvNewsContent.setText(Html.fromHtml(news.getDescription()));
         holder.tvNewsTime.setText(news.getPubDate());
         if(news.getSummaryImg() != null && !news.getSummaryImg().equals("")){
