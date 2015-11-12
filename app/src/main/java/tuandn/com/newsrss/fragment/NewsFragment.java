@@ -142,6 +142,10 @@ public class NewsFragment extends Fragment {
                         if(i !=4 && j != 3){
                         imageUrl = item.getDescription().substring(i, j);}
                         item.setGuid(imageUrl);
+
+                        i = item.getDescription().indexOf("</br>");
+                        String description = i>0 ? item.getDescription().substring(i+5, item.getDescription().length()) : "";
+                        item.setDescription(description);
                     }
                     mAdapter = new ListNewsAdapter(getContext(),rss);
                     mLvNew.setAdapter(mAdapter);
