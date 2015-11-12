@@ -8,9 +8,9 @@
             android:title="Dân trí" />
         <item android:id="@+id/nav_24h" android:icon="@drawable/ic_24h"
             android:title="24h" />
-        <item android:id="@+id/nav_bongdaplus"
+        <item android:id="@+id/nav_vietnamnet"
             android:icon="@drawable/ic_bongdaplus"
-            android:title="Bongda Plus" />
+            android:title="Vietnamnet" />
     </group>
 
     <item android:title="Communicate">

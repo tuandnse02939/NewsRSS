@@ -17,9 +17,9 @@ import retrofit.SimpleXmlConverterFactory;
 import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
-import tuandn.com.newsrss.vnexpress.ApiInterface;
-import tuandn.com.newsrss.vnexpress.Item;
-import tuandn.com.newsrss.vnexpress.Rss;
+import tuandn.com.newsrss.entity.ApiInterface;
+import tuandn.com.newsrss.entity.Item;
+import tuandn.com.newsrss.entity.Rss;
 
 /**
  * Created by Anh Trung on 11/9/2015.
@@ -115,9 +115,66 @@ public class NewsFragment extends Fragment {
                     break;
             }
         } else if(newspaperName.equals(MainActivity.ONLINE24H)){
-
-        } else if(newspaperName.equals(MainActivity.BONGDAPLUS)){
-
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://www.24h.com.vn/upload/rss")
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            ApiInterface api = retrofit.create(ApiInterface.class);
+            switch (position) {
+                case NEWEST:
+                    call = api.getTintuc24h();
+                    break;
+                case HEADLINE:
+                    call = api.getBongda24h();
+                    break;
+                case WORLD:
+                    call = api.getAnninh24h();
+                    break;
+                case BUSINESS:
+                    call = api.getThoitrang24h();
+                    break;
+                case 4:
+                    call = api.getTaichinh24h();
+                    break;
+                case 5:
+                    call = api.getThethao24h();
+                    break;
+                case 6:
+                    call = api.getPhim24h();
+                    break;
+                default:
+                    call = api.getTintuc24h();
+                    break;
+            }
+        } else if(newspaperName.equals(MainActivity.VIETNAMNET)){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://vietnamnet.vn/rss/")
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            ApiInterface api = retrofit.create(ApiInterface.class);
+            switch (position) {
+                case NEWEST:
+                    call = api.getTrangchuVNN();
+                    break;
+                case HEADLINE:
+                    call = api.getTinmoinongVNN();
+                    break;
+                case WORLD:
+                    call = api.getTinnoibatVNN();
+                    break;
+                case BUSINESS:
+                    call = api.getXahoiVNN();
+                    break;
+                case 4:
+                    call = api.getGiaoducVNN();
+                    break;
+                case 5:
+                    call = api.getChinhtriVNN();
+                    break;
+                default:
+                    call = api.getTrangchuVNN();
+                    break;
+            }
         }
 
 
@@ -127,7 +184,6 @@ public class NewsFragment extends Fragment {
             @Override
             public void onResponse(Response<Rss> response, Retrofit retrofit) {
                 if (response.isSuccess()) {
-//                    EventBus.getDefault().post(response.body());
                     Rss rss = response.body();
                     for(Item item : rss.getChannel().getItem()){
                         int i = item.getDescription().indexOf("src") + 5;

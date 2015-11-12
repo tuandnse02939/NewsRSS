@@ -18,13 +18,13 @@ public class MainActivity extends AppCompatActivity
 
     public static String CATEGORY_VnExpress[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Kinh doanh"};
     public static String CATEGORY_Dantri[] = {"Trang chủ","Sức khỏe","Xã hội", "Giải trí", "Giáo dục", "Thể thao", "Thế giới", "Kinh doanh" };
-    public static String CATEGORY_24h[] = {"3","4"};
-    public static String CATEGORY_BongdaPlus[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Đời sống"};
+    public static String CATEGORY_24h[] = {"Tin tức","Bóng đá","An ninh", "Thời trang", "Tài chính", "Thể thao", "Phim"};
+    public static String CATEGORY_Vietnamnet[] = {"Trang chủ","Tin mới nóng", "Tin nổi bật" ,"Xã hội", "Giáo dục", "Chính trị"};
 
     public static String VNEXPRESS = "VNEXPRESS";
     public static String DANTRI = "DANTRI";
     public static String ONLINE24H = "ONLINE24H";
-    public static String BONGDAPLUS = "BONGDAPLUS";
+    public static String VIETNAMNET = "VIETNAMNET";
 
     private FragmentManager fragmentManager;
     private Fragment targetFragment;
@@ -105,11 +105,11 @@ public class MainActivity extends AppCompatActivity
             dataForNewsPaper.setListCategory(CATEGORY_24h);
             dataForNewsPaper.setNewspaperName(ONLINE24H);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
-        } else if (id == R.id.nav_bongdaplus) {
+        } else if (id == R.id.nav_vietnamnet) {
             targetFragment = new NewsPaperFragment();
-            dataForNewsPaper.setBanner(R.drawable.banner_bongdaplus);
-            dataForNewsPaper.setListCategory(CATEGORY_BongdaPlus);
-            dataForNewsPaper.setNewspaperName(BONGDAPLUS);
+            dataForNewsPaper.setBanner(R.drawable.banner_vietnamnet);
+            dataForNewsPaper.setListCategory(CATEGORY_Vietnamnet);
+            dataForNewsPaper.setNewspaperName(VIETNAMNET);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         }
 

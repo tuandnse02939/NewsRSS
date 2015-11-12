@@ -2,6 +2,7 @@ package tuandn.com.newsrss.fragment;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import tuandn.com.newsrss.R;
-import tuandn.com.newsrss.vnexpress.Item;
-import tuandn.com.newsrss.vnexpress.Rss;
+import tuandn.com.newsrss.entity.Item;
+import tuandn.com.newsrss.entity.Rss;
 
 /**
  * Created by Anh Trung on 11/9/2015.
@@ -93,9 +92,13 @@ public class ListNewsAdapter implements ListAdapter{
         }
         Item news = data.getChannel().getItem().get(position);
         holder.tvNewsTitle.setText(news.getTitle());
-        holder.tvNewsContent.setText(news.getDescription());
+        holder.tvNewsContent.setText(Html.fromHtml(news.getDescription()));
         holder.tvNewsTime.setText(news.getPubDate());
-        if(!news.getGuid().equals("")) {
+        if(news.getSummaryImg() != null && !news.getSummaryImg().equals("")){
+            Picasso.with(context).load(news.getSummaryImg()).into(holder.ivImage);
+        } else if(news.getImage() != null && !news.getImage().equals("")){
+            Picasso.with(context).load(news.getImage()).into(holder.ivImage);
+        } else if(!news.getGuid().equals("")) {
             Picasso.with(context).load(news.getGuid()).into(holder.ivImage);
         }
         return convertView;
