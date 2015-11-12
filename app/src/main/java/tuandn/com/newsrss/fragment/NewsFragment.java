@@ -200,8 +200,17 @@ public class NewsFragment extends Fragment {
                         item.setGuid(imageUrl);
 
                         i = item.getDescription().indexOf("</br>");
-                        String description = i>0 ? item.getDescription().substring(i+5, item.getDescription().length()) : "";
+                        j = item.getDescription().indexOf("<br /");
+                        String description = "";
+                        if(i>0) {
+                            description = item.getDescription().substring(i+5, item.getDescription().length());
+                        } else if (j>0){
+                            description = item.getDescription().substring(0, j);
+                        } else if(item.getDescription().length() > 0 && item.getDescription().indexOf("<a") != 0){
+                            description = item.getDescription();
+                        }
                         item.setDescription(description);
+
                     }
                     mAdapter = new ListNewsAdapter(getContext(),rss);
                     mLvNew.setAdapter(mAdapter);
