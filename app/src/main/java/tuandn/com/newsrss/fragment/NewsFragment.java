@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Call;
@@ -39,6 +40,7 @@ public class NewsFragment extends ListFragment {
     private ListNewsAdapter mAdapter;
     private ListView mLvNew;
     private Rss rss;
+    private ProgressBar mProgress;
 
     @Nullable
     @Override
@@ -47,7 +49,9 @@ public class NewsFragment extends ListFragment {
         mLvNew = (ListView) rootView.findViewById(android.R.id.list);
 
         rss = new Rss();
-
+        mProgress = (ProgressBar) rootView.findViewById(R.id.pbWaiting);
+        mProgress.setVisibility(View.VISIBLE);
+        mProgress.setProgress(100);
 
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
         String newspaperName = dataForNewsPaper.getNewspaperName();
@@ -183,6 +187,8 @@ public class NewsFragment extends ListFragment {
 
             @Override
             public void onResponse(Response<Rss> response, Retrofit retrofit) {
+                mProgress.setProgress(0);
+                mProgress.setVisibility(View.INVISIBLE);
                 if (response.isSuccess()) {
                     Rss rss = response.body();
                     for(Item item : rss.getChannel().getItem()){
@@ -202,15 +208,15 @@ public class NewsFragment extends ListFragment {
                         i = item.getDescription().indexOf("</br>");
                         j = item.getDescription().indexOf("<br /");
                         String description = "";
-                        if(i>0) {
+                        if(i>0) { //News Description for VnExpress
                             description = item.getDescription().substring(i+5, item.getDescription().length());
-                        } else if (j>0){
+                        } else if (j>0){ //News Description for Vietnamnet
                             description = item.getDescription().substring(0, j);
-                        } else if(item.getDescription().length() > 0 && item.getDescription().indexOf("<a") != 0){
+                            description = description.replace("&amp;nbsp;", " ");
+                        } else if(item.getDescription().length() > 0 && item.getDescription().indexOf("<a") != 0){ //News Description for 24h
                             description = item.getDescription();
                         }
                         item.setDescription(description);
-
                     }
                     mAdapter = new ListNewsAdapter(getContext(),rss);
                     mLvNew.setAdapter(mAdapter);
@@ -221,6 +227,8 @@ public class NewsFragment extends ListFragment {
 
             @Override
             public void onFailure(Throwable t) {
+                mProgress.setProgress(0);
+                mProgress.setVisibility(View.INVISIBLE);
                 System.out.println("Loi: " + t.getMessage());
             }
         });
