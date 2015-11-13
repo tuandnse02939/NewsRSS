@@ -23,7 +23,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:divider="@null"
-                android:dividerHeight="0dp"></ListView>
+                android:dividerHeight="3dp"></ListView>
         </LinearLayout>
 
         <ProgressBar
