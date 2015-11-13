@@ -2,16 +2,19 @@ package tuandn.com.newsrss;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
-import tuandn.com.newsrss.fragment.NewsPaperFragment;
+import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +32,10 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private Fragment targetFragment;
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ImageView ivBanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,17 +49,25 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ivBanner = (ImageView) findViewById(R.id.banner);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
 
-        targetFragment = new NewsPaperFragment();
+        //Load VnExpress on Start
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
         dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
         dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
         dataForNewsPaper.setNewspaperName(VNEXPRESS);
-        fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
+        ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_vnexpress));
+        viewPager.setAdapter(new NewsFragmentAdapter(getSupportFragmentManager(), this));
+        viewPager.getAdapter().notifyDataSetChanged();
+        viewPager.setCurrentItem(0);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -86,29 +101,33 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
-        targetFragment = new NewsPaperFragment();
 
         if (id == R.id.nav_vnexpress) {
             dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
             dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
             dataForNewsPaper.setNewspaperName(VNEXPRESS);
-            fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
+            ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_vnexpress));
         } else if (id == R.id.nav_dantri) {
             dataForNewsPaper.setBanner(R.drawable.banner_dantri);
             dataForNewsPaper.setListCategory(CATEGORY_Dantri);
             dataForNewsPaper.setNewspaperName(DANTRI);
-            fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
+            ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_dantri));
         } else if (id == R.id.nav_24h) {
             dataForNewsPaper.setBanner(R.drawable.banner_24h);
             dataForNewsPaper.setListCategory(CATEGORY_24h);
             dataForNewsPaper.setNewspaperName(ONLINE24H);
-            fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
+            ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_24h));
         } else if (id == R.id.nav_vietnamnet) {
             dataForNewsPaper.setBanner(R.drawable.banner_vietnamnet);
             dataForNewsPaper.setListCategory(CATEGORY_Vietnamnet);
             dataForNewsPaper.setNewspaperName(VIETNAMNET);
-            fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
+            ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_vietnamnet));
         }
+
+        viewPager.setAdapter(new NewsFragmentAdapter(getSupportFragmentManager(), this));
+        viewPager.getAdapter().notifyDataSetChanged();
+        viewPager.setCurrentItem(0);
+        tabLayout.setupWithViewPager(viewPager);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
