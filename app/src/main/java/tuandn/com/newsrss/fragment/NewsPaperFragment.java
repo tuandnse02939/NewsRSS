@@ -44,6 +44,7 @@ public class NewsPaperFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         viewPager.setAdapter(new NewsFragmentAdapter(getActivity().getSupportFragmentManager(), getActivity()));
+        viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(viewPager);
     }

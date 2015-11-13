@@ -86,27 +86,24 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
+        targetFragment = new NewsPaperFragment();
 
         if (id == R.id.nav_vnexpress) {
-            targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
             dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
             dataForNewsPaper.setNewspaperName(VNEXPRESS);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_dantri) {
-            targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_dantri);
             dataForNewsPaper.setListCategory(CATEGORY_Dantri);
             dataForNewsPaper.setNewspaperName(DANTRI);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_24h) {
-            targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_24h);
             dataForNewsPaper.setListCategory(CATEGORY_24h);
             dataForNewsPaper.setNewspaperName(ONLINE24H);
             fragmentManager.beginTransaction().replace(R.id.layout_content, targetFragment).commitAllowingStateLoss();
         } else if (id == R.id.nav_vietnamnet) {
-            targetFragment = new NewsPaperFragment();
             dataForNewsPaper.setBanner(R.drawable.banner_vietnamnet);
             dataForNewsPaper.setListCategory(CATEGORY_Vietnamnet);
             dataForNewsPaper.setNewspaperName(VIETNAMNET);

@@ -2,7 +2,7 @@ package tuandn.com.newsrss.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +24,7 @@ import tuandn.com.newsrss.vnexpress.Rss;
 /**
  * Created by Anh Trung on 11/9/2015.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends ListFragment {
 
     public static final int NEWEST = 0;
     public static final int HEADLINE = 1;
@@ -44,7 +44,7 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_news, container, false);
-        mLvNew = (ListView) rootView.findViewById(R.id.lvListNew);
+        mLvNew = (ListView) rootView.findViewById(android.R.id.list);
 
         rss = new Rss();
 
@@ -196,7 +196,7 @@ public class NewsFragment extends Fragment {
                         }
                         String imageUrl = "";
                         if(i !=4 && j != 3){
-                        imageUrl = item.getDescription().substring(i, j);}
+                            imageUrl = item.getDescription().substring(i, j);}
                         item.setGuid(imageUrl);
 
                         i = item.getDescription().indexOf("</br>");
@@ -228,7 +228,6 @@ public class NewsFragment extends Fragment {
         rss = new Rss();
         mAdapter = new ListNewsAdapter(getContext(),rss);
         mLvNew.setAdapter(mAdapter);
-
         return rootView;
     }
 
@@ -252,6 +251,11 @@ public class NewsFragment extends Fragment {
         rss = new Rss();
         rss = response;
         mLvNew.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
