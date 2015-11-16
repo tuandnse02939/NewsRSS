@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/layout_hunhu_member"
+        android:id="@+id/layout_list_news"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:foregroundGravity="center">
@@ -36,5 +36,12 @@
             android:visibility="visible" />
 
     </FrameLayout>
+
+    <WebView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/wv_news_detail">
+
+    </WebView>
 
 </LinearLayout>
