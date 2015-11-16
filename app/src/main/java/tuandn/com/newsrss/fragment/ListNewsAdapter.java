@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import de.greenrobot.event.EventBus;
 import tuandn.com.newsrss.R;
 import tuandn.com.newsrss.vnexpress.Item;
 import tuandn.com.newsrss.vnexpress.Rss;
@@ -57,12 +59,7 @@ public class ListNewsAdapter implements ListAdapter{
 
     @Override
     public Item getItem(int position) {
-        if (data != null && data.getChannel().getItem().size() - 1 >= position && position >= 0) {
-            return data.getChannel().getItem().get(position);
-        }
-        else {
-            return null;
-        }
+        return data != null ? data.getChannel().getItem().get(position) : null;
     }
 
     @Override
@@ -90,7 +87,7 @@ public class ListNewsAdapter implements ListAdapter{
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Item news = data.getChannel().getItem().get(position);
+        final Item news = data.getChannel().getItem().get(position);
         holder.tvNewsTitle.setText(Html.fromHtml(news.getTitle()));
         holder.tvNewsContent.setText(Html.fromHtml(news.getDescription()));
         holder.tvNewsTime.setText(news.getPubDate());
@@ -110,6 +107,13 @@ public class ListNewsAdapter implements ListAdapter{
                     .centerCrop()
                     .into(holder.ivImage);
         }
+
+        holder.lyNewsItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(news.getLink());
+            }
+        });
         return convertView;
     }
 

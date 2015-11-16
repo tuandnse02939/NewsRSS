@@ -1,13 +1,23 @@
 package tuandn.com.newsrss.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Call;
@@ -18,14 +28,17 @@ import retrofit.SimpleXmlConverterFactory;
 import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
+import tuandn.com.newsrss.ultilities.GlobalParams;
+import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
 import tuandn.com.newsrss.vnexpress.ApiInterface;
+import tuandn.com.newsrss.vnexpress.Channel;
 import tuandn.com.newsrss.vnexpress.Item;
 import tuandn.com.newsrss.vnexpress.Rss;
 
 /**
  * Created by Anh Trung on 11/9/2015.
  */
-public class NewsFragment extends ListFragment {
+public class NewsFragment extends Fragment {
 
     public static final int NEWEST = 0;
     public static final int HEADLINE = 1;
@@ -41,6 +54,10 @@ public class NewsFragment extends ListFragment {
     private ListView mLvNew;
     private Rss rss;
     private ProgressBar mProgress;
+    private FrameLayout frameLayout;
+    private WebView webView;
+    private SharedPreferenceManager mPreferencee;
+    private int k = 0;
 
     @Nullable
     @Override
@@ -48,10 +65,15 @@ public class NewsFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.layout_news, container, false);
         mLvNew = (ListView) rootView.findViewById(android.R.id.list);
 
+        mPreferencee = new SharedPreferenceManager(getContext());
+
         rss = new Rss();
         mProgress = (ProgressBar) rootView.findViewById(R.id.pbWaiting);
         mProgress.setVisibility(View.VISIBLE);
         mProgress.setProgress(100);
+
+        frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
+        webView = (WebView) rootView.findViewById(R.id.wv_news_detail);
 
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
         String newspaperName = dataForNewsPaper.getNewspaperName();
@@ -59,7 +81,7 @@ public class NewsFragment extends ListFragment {
         position = getArguments().getInt("position");
 
 
-        if(newspaperName.equals(MainActivity.VNEXPRESS)) {
+        if (newspaperName.equals(MainActivity.VNEXPRESS)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://vnexpress.net")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -83,7 +105,7 @@ public class NewsFragment extends ListFragment {
                     break;
             }
 
-        } else if(newspaperName.equals(MainActivity.DANTRI)){
+        } else if (newspaperName.equals(MainActivity.DANTRI)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://dantri.com.vn")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -118,7 +140,7 @@ public class NewsFragment extends ListFragment {
                     call = api.getTrangchuDantri();
                     break;
             }
-        } else if(newspaperName.equals(MainActivity.ONLINE24H)){
+        } else if (newspaperName.equals(MainActivity.ONLINE24H)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://24h.com.vn")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -150,7 +172,7 @@ public class NewsFragment extends ListFragment {
                     call = api.getTintuc24h();
                     break;
             }
-        } else if(newspaperName.equals(MainActivity.VIETNAMNET)){
+        } else if (newspaperName.equals(MainActivity.VIETNAMNET)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://vietnamnet.vn/")
                     .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -190,36 +212,50 @@ public class NewsFragment extends ListFragment {
                 mProgress.setProgress(0);
                 mProgress.setVisibility(View.INVISIBLE);
                 if (response.isSuccess()) {
-                    Rss rss = response.body();
-                    for(Item item : rss.getChannel().getItem()){
+                    rss = response.body();
+                    for (Item item : rss.getChannel().getItem()) {
                         int i = item.getDescription().indexOf("src") + 5;
                         int j = item.getDescription().indexOf(".jpg") + 4;
-                        if(j == 3) {
+                        if (j == 3) {
                             j = item.getDescription().indexOf(".jpeg") + 5;
-                            if(j == 4){
+                            if (j == 4) {
                                 j = item.getDescription().indexOf(".png") + 4;
                             }
                         }
                         String imageUrl = "";
-                        if(i !=4 && j != 3){
-                            imageUrl = item.getDescription().substring(i, j);}
+                        if (i != 4 && j != 3) {
+                            imageUrl = item.getDescription().substring(i, j);
+                        }
                         item.setGuid(imageUrl);
 
                         i = item.getDescription().indexOf("</br>");
                         j = item.getDescription().indexOf("<br /");
                         String description = "";
-                        if(i>0) { //News Description for VnExpress
-                            description = item.getDescription().substring(i+5, item.getDescription().length());
-                        } else if (j>0){ //News Description for Vietnamnet
+                        if (i > 0) {
+                            //News Description for VnExpress
+                            description = item.getDescription().substring(i + 5, item.getDescription().length());
+                        } else if (j > 0) {
+                            //News Description for Vietnamnet
                             description = item.getDescription().substring(0, j);
                             description = description.replace("&amp;nbsp;", " ");
-                        } else if(item.getDescription().length() > 0 && item.getDescription().indexOf("<a") != 0){ //News Description for 24h
+                        } else if (item.getDescription().length() > 0 && item.getDescription().indexOf("<a") != 0) {
+                            //News Description for 24h
                             description = item.getDescription();
                         }
                         item.setDescription(description);
                     }
-                    mAdapter = new ListNewsAdapter(getContext(),rss);
+                    mAdapter = new ListNewsAdapter(getContext(), rss);
                     mLvNew.setAdapter(mAdapter);
+                    mLvNew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getContext(), "Position: " + position, Toast.LENGTH_LONG).show();
+//                            frameLayout.setVisibility(View.INVISIBLE);
+//                            webView.setVisibility(View.VISIBLE);
+//                            webView.getSettings().setJavaScriptEnabled(true);
+//                            webView.loadUrl(mAdapter.getItem(position).getLink());
+                        }
+                    });
                 } else {
                     System.out.println("Loi: " + response.toString());
                 }
@@ -233,9 +269,11 @@ public class NewsFragment extends ListFragment {
             }
         });
 
-        rss = new Rss();
-        mAdapter = new ListNewsAdapter(getContext(),rss);
-        mLvNew.setAdapter(mAdapter);
+        if(!mPreferencee.getBoolean(GlobalParams.READING_NEWS,false)) {
+            frameLayout.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.GONE);
+        }
+        k=0;
         return rootView;
     }
 
@@ -255,10 +293,31 @@ public class NewsFragment extends ListFragment {
     }
 
     public void onEvent(Rss response) {
-        mAdapter = new ListNewsAdapter(getContext(),response);
+        mAdapter = new ListNewsAdapter(getContext(), response);
         rss = new Rss();
         rss = response;
         mLvNew.setAdapter(mAdapter);
+    }
+
+    public void onEvent(String response) {
+        if(k == 0) {
+            frameLayout.setVisibility(View.GONE);
+            webView.setVisibility(View.VISIBLE);
+        } else {
+            frameLayout.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.GONE);
+        }
+        webView.clearView();
+//        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.loadUrl(response);
+        k = 1;
+        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -271,4 +330,5 @@ public class NewsFragment extends ListFragment {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
+
 }

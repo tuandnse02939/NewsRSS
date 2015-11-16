@@ -49,4 +49,8 @@ public class Channel {
     public List<Item> getItem() {
         return item;
     }
+
+    public void setItem(List<Item> item) {
+        this.item = item;
+    }
 }

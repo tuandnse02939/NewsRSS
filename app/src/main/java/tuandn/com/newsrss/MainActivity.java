@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
+import tuandn.com.newsrss.ultilities.GlobalParams;
+import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -75,9 +77,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
     }
 
     @Override
@@ -127,10 +135,31 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(new NewsFragmentAdapter(getSupportFragmentManager(), this));
         viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(0);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
+                mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
+                mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
+                mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

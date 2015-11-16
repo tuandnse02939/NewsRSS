@@ -89,4 +89,24 @@ public class Item {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setSlash(String slash) {
+        this.slash = slash;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 }
