@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import de.greenrobot.event.EventBus;
@@ -79,10 +80,7 @@ public class MainActivity extends AppCompatActivity
         viewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(viewPager);
         mPreferencee = new SharedPreferenceManager(MainActivity.this);
-        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
-        tabLayout.setVisibility(View.VISIBLE);
-        viewPager.setVisibility(View.VISIBLE);
-        webView.setVisibility(View.GONE);
+        setupLayout(true);
 
         EventBus.getDefault().register(this);
     }
@@ -93,10 +91,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if(mPreferencee.getBoolean(GlobalParams.READING_NEWS,false)) {
-            tabLayout.setVisibility(View.VISIBLE);
-            viewPager.setVisibility(View.VISIBLE);
-            webView.setVisibility(View.GONE);
-            mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+            setupLayout(true);
         } else {
             super.onBackPressed();
         }
@@ -123,6 +118,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
+        setupLayout(true);
 
         if (id == R.id.nav_vnexpress) {
             dataForNewsPaper.setBanner(R.drawable.banner_vnexpress);
@@ -175,19 +171,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onEvent(String response) {
-        tabLayout.setVisibility(View.GONE);
-        viewPager.setVisibility(View.GONE);
-        webView.setVisibility(View.VISIBLE);
-        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
-        webView.clearView();
+        setupLayout(false);
+        response = response.trim();
+        // Edit url to load mobile version
+        String url = response.substring(0,7) + "m." + response.substring(7,response.length());
+        webView.loadUrl("about:blank");
 //        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.loadUrl(response);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl(url);
     }
 
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    private void setupLayout(boolean check){
+        if(check){
+            tabLayout.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.GONE);
+            mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+        } else {
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
+            webView.setVisibility(View.VISIBLE);
+            mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
+        }
     }
 }
