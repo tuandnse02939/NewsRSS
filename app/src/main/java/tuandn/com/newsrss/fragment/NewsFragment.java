@@ -9,7 +9,6 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -55,9 +54,7 @@ public class NewsFragment extends Fragment {
     private Rss rss;
     private ProgressBar mProgress;
     private FrameLayout frameLayout;
-    private WebView webView;
     private SharedPreferenceManager mPreferencee;
-    private int k = 0;
 
     @Nullable
     @Override
@@ -73,7 +70,6 @@ public class NewsFragment extends Fragment {
         mProgress.setProgress(100);
 
         frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
-        webView = (WebView) rootView.findViewById(R.id.wv_news_detail);
 
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
         String newspaperName = dataForNewsPaper.getNewspaperName();
@@ -271,9 +267,7 @@ public class NewsFragment extends Fragment {
 
         if(!mPreferencee.getBoolean(GlobalParams.READING_NEWS,false)) {
             frameLayout.setVisibility(View.VISIBLE);
-            webView.setVisibility(View.GONE);
         }
-        k=0;
         return rootView;
     }
 
@@ -289,30 +283,6 @@ public class NewsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    public void onEvent(Rss response) {
-        mAdapter = new ListNewsAdapter(getContext(), response);
-        rss = new Rss();
-        rss = response;
-        mLvNew.setAdapter(mAdapter);
-    }
-
-    public void onEvent(String response) {
-        if(k == 0) {
-            frameLayout.setVisibility(View.GONE);
-            webView.setVisibility(View.VISIBLE);
-        } else {
-            frameLayout.setVisibility(View.VISIBLE);
-            webView.setVisibility(View.GONE);
-        }
-        webView.clearView();
-//        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.loadUrl(response);
-        k = 1;
-        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
     }
 
     @Override
@@ -327,7 +297,6 @@ public class NewsFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 

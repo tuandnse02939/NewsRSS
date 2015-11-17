@@ -12,8 +12,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 
+import de.greenrobot.event.EventBus;
 import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
 import tuandn.com.newsrss.ultilities.GlobalParams;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
@@ -38,6 +41,10 @@ public class MainActivity extends AppCompatActivity
     private ViewPager viewPager;
     private ImageView ivBanner;
 
+    private WebView webView;
+
+    private SharedPreferenceManager mPreferencee;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +60,8 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        ivBanner = (ImageView) findViewById(R.id.banner);
+        ivBanner = (ImageView)  findViewById(R.id.banner);
+        webView = (WebView)     findViewById(R.id.wv_news_detail);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -70,6 +78,13 @@ public class MainActivity extends AppCompatActivity
         viewPager.getAdapter().notifyDataSetChanged();
         viewPager.setCurrentItem(0);
         tabLayout.setupWithViewPager(viewPager);
+        mPreferencee = new SharedPreferenceManager(MainActivity.this);
+        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
+        tabLayout.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
+        webView.setVisibility(View.GONE);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -77,15 +92,14 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        int count = getFragmentManager().getBackStackEntryCount();
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
+        } else if(mPreferencee.getBoolean(GlobalParams.READING_NEWS,false)) {
+            tabLayout.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.VISIBLE);
+            webView.setVisibility(View.GONE);
+            mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
         } else {
-            getSupportFragmentManager().popBackStack();
+            super.onBackPressed();
         }
-
     }
 
     @Override
@@ -138,22 +152,21 @@ public class MainActivity extends AppCompatActivity
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
                 mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
             }
 
             @Override
             public void onPageSelected(int position) {
-                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
                 mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                SharedPreferenceManager mPreferencee = new SharedPreferenceManager(MainActivity.this);
                 mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
             }
         });
+        mPreferencee.saveBoolean(GlobalParams.CHECK_NEWS, false);
+        viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -161,5 +174,20 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void onEvent(String response) {
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+        webView.setVisibility(View.VISIBLE);
+        mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
+        webView.clearView();
+//        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.loadUrl(response);
+    }
 
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 }
