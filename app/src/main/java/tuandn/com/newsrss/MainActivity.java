@@ -1,5 +1,6 @@
 package tuandn.com.newsrss;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -13,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import de.greenrobot.event.EventBus;
 import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
@@ -30,10 +33,11 @@ public class MainActivity extends AppCompatActivity
     public static String CATEGORY_24h[] = {"Tin tức","Bóng đá","An ninh", "Thời trang", "Tài chính", "Thể thao", "Phim"};
     public static String CATEGORY_Vietnamnet[] = {"Trang chủ","Tin mới nóng", "Tin nổi bật" ,"Xã hội", "Giáo dục", "Chính trị"};
 
-    public static String VNEXPRESS = "VNEXPRESS";
-    public static String DANTRI = "DANTRI";
-    public static String ONLINE24H = "ONLINE24H";
-    public static String VIETNAMNET = "VIETNAMNET";
+    public static String VNEXPRESS = "vnexpress";
+    public static String DANTRI = "dantri";
+    public static String ONLINE24H = "24h";
+    public static String VIETNAMNET = "vietnamnet";
+    public static String WWW = "www";
 
     private FragmentManager fragmentManager;
     private Fragment targetFragment;
@@ -87,6 +91,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        webView.stopLoading();
+        webView.loadUrl("about:blank");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -169,16 +175,23 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     public void onEvent(String response) {
         setupLayout(false);
         response = response.trim();
+        String url = response;
         // Edit url to load mobile version
-        String url = response.substring(0,7) + "m." + response.substring(7,response.length());
-        webView.loadUrl("about:blank");
-//        webView.getSettings().setJavaScriptEnabled(true);
+        if(!response.contains(VNEXPRESS)) {
+            if (response.contains("." + ONLINE24H + ".")  && response.contains(WWW + ".")) {
+                int i = response.indexOf("www.");
+                url = response.substring(0, i) + "m." + response.substring(i+4, response.length());
+            } else {
+                int i = !response.contains("www.") ? 7 : response.indexOf(WWW + ".") + 4;
+                url = response.substring(0, i) + "m." + response.substring(i, response.length());
+            }
+        }
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() );
         webView.loadUrl(url);
     }
 
