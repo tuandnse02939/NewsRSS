@@ -29,6 +29,7 @@ import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
 import tuandn.com.newsrss.ultilities.GlobalParams;
+import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
 import tuandn.com.newsrss.vnexpress.ApiInterface;
 import tuandn.com.newsrss.vnexpress.Channel;
@@ -70,15 +71,19 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mProgress = (ProgressBar) rootView.findViewById(R.id.pbWaiting);
         mProgress.setVisibility(View.VISIBLE);
         mProgress.setProgress(100);
-
         frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
 
         position = getArguments().getInt("position");
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        loadListNews();
+        if(NetworkUlt.checkConnection(getContext())) {
+            loadListNews();
+        } else {
+            Toast.makeText(getContext(),getResources().getString(R.string.no_internet),Toast.LENGTH_SHORT).show();
+        }
 
 
         return rootView;
@@ -115,7 +120,14 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        loadListNews();
+        if(NetworkUlt.checkConnection(getContext())) {
+            loadListNews();
+        } else {
+            Toast.makeText(getContext(),getResources().getString(R.string.no_internet),Toast.LENGTH_SHORT).show();
+            if(swipeRefreshLayout.isRefreshing()){
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
     }
 
     private void loadListNews(){

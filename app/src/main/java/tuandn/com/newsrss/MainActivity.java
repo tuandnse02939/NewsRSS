@@ -19,10 +19,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
 import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
 import tuandn.com.newsrss.ultilities.GlobalParams;
+import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
 
 public class MainActivity extends AppCompatActivity
@@ -178,24 +180,29 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
     public void onEvent(String response) {
-        setupLayout(false);
-        response = response.trim();
-        String url = response;
-        // Edit url to load mobile version
-        if(!response.contains(VNEXPRESS)) {
-            if (response.contains("." + ONLINE24H + ".")  && response.contains(WWW + ".")) {
-                int i = response.indexOf("www.");
-                url = response.substring(0, i) + "m." + response.substring(i+4, response.length());
-            } else {
-                int i = !response.contains("www.") ? 7 : response.indexOf(WWW + ".") + 4;
-                url = response.substring(0, i) + "m." + response.substring(i, response.length());
+        if(NetworkUlt.checkConnection(getApplicationContext())) {
+            setupLayout(false);
+            response = response.trim();
+            String url = response;
+            // Edit url to load mobile version
+            if (!response.contains(VNEXPRESS)) {
+                if (response.contains("." + ONLINE24H + ".") && response.contains(WWW + ".")) {
+                    int i = response.indexOf("www.");
+                    url = response.substring(0, i) + "m." + response.substring(i + 4, response.length());
+                } else {
+                    int i = !response.contains("www.") ? 7 : response.indexOf(WWW + ".") + 4;
+                    url = response.substring(0, i) + "m." + response.substring(i, response.length());
+                }
             }
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.setWebViewClient(new WebViewClient());
+            webView.loadUrl(url);
+        } else {
+            Toast.makeText(getApplicationContext(),getResources().getString(R.string.no_internet),Toast.LENGTH_SHORT).show();
         }
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.setWebViewClient(new WebViewClient() );
-        webView.loadUrl(url);
     }
+
 
     @Override
     protected void onDestroy() {
