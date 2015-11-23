@@ -170,6 +170,8 @@ public class MainActivity extends AppCompatActivity
         mPreferencee.saveBoolean(GlobalParams.CHECK_NEWS, false);
         viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import tuandn.com.newsrss.vnexpress.Rss;
 /**
  * Created by Anh Trung on 11/9/2015.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     public static final int NEWEST = 0;
     public static final int HEADLINE = 1;
@@ -55,6 +56,7 @@ public class NewsFragment extends Fragment {
     private ProgressBar mProgress;
     private FrameLayout frameLayout;
     private SharedPreferenceManager mPreferencee;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
@@ -70,13 +72,55 @@ public class NewsFragment extends Fragment {
         mProgress.setProgress(100);
 
         frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
-
-        DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
-        String newspaperName = dataForNewsPaper.getNewspaperName();
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
 
         position = getArguments().getInt("position");
 
+        swipeRefreshLayout.setOnRefreshListener(this);
 
+        loadListNews();
+
+
+        return rootView;
+    }
+
+    public static NewsFragment newInstance(int position) {
+        Bundle args = new Bundle();
+        args.putInt("position", position);
+        NewsFragment fragment = new NewsFragment();
+        fragment.setArguments(args);
+        fragment.setRetainInstance(true);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onRefresh() {
+        loadListNews();
+    }
+
+    private void loadListNews(){
+        DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
+        String newspaperName = dataForNewsPaper.getNewspaperName();
         if (newspaperName.equals(MainActivity.VNEXPRESS)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://vnexpress.net")
@@ -242,16 +286,9 @@ public class NewsFragment extends Fragment {
                     }
                     mAdapter = new ListNewsAdapter(getContext(), rss);
                     mLvNew.setAdapter(mAdapter);
-                    mLvNew.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getContext(), "Position: " + position, Toast.LENGTH_LONG).show();
-//                            frameLayout.setVisibility(View.INVISIBLE);
-//                            webView.setVisibility(View.VISIBLE);
-//                            webView.getSettings().setJavaScriptEnabled(true);
-//                            webView.loadUrl(mAdapter.getItem(position).getLink());
-                        }
-                    });
+                    if(swipeRefreshLayout.isRefreshing()){
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                 } else {
                     System.out.println("Loi: " + response.toString());
                 }
@@ -268,36 +305,5 @@ public class NewsFragment extends Fragment {
         if(!mPreferencee.getBoolean(GlobalParams.READING_NEWS,false)) {
             frameLayout.setVisibility(View.VISIBLE);
         }
-        return rootView;
     }
-
-    public static NewsFragment newInstance(int position) {
-        Bundle args = new Bundle();
-        args.putInt("position", position);
-        NewsFragment fragment = new NewsFragment();
-        fragment.setArguments(args);
-        fragment.setRetainInstance(true);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
 }
