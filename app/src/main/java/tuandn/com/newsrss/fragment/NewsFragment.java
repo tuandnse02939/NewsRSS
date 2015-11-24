@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ import retrofit.SimpleXmlConverterFactory;
 import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
+import tuandn.com.newsrss.adapter.ListAdapter;
 import tuandn.com.newsrss.ultilities.GlobalParams;
 import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
@@ -51,19 +54,20 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private int position;
     private Call<Rss> call;
 
-    private ListNewsAdapter mAdapter;
-    private ListView mLvNew;
+//    private ListNewsAdapter mAdapter;
+//    private ListView mLvNew;
     private Rss rss;
     private ProgressBar mProgress;
     private FrameLayout frameLayout;
     private SharedPreferenceManager mPreferencee;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.layout_news, container, false);
-        mLvNew = (ListView) rootView.findViewById(android.R.id.list);
+        View rootView = inflater.inflate(R.layout.new_layout_news, container, false);
+//        mLvNew = (ListView) rootView.findViewById(android.R.id.list);
 
         mPreferencee = new SharedPreferenceManager(getContext());
 
@@ -74,6 +78,29 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+
+
+        recList = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
+
+        //Check if recyclerView scrolled at top then set swipeRefreshLayout enable or not
+        recList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         position = getArguments().getInt("position");
 
@@ -296,8 +323,9 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         }
                         item.setDescription(description);
                     }
-                    mAdapter = new ListNewsAdapter(getContext(), rss);
-                    mLvNew.setAdapter(mAdapter);
+                    recList.setAdapter(new ListAdapter(rss));
+//                    mAdapter = new ListNewsAdapter(getContext(), rss);
+//                    mLvNew.setAdapter(mAdapter);
                     if(swipeRefreshLayout.isRefreshing()){
                         swipeRefreshLayout.setRefreshing(false);
                     }
