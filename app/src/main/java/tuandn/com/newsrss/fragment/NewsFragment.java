@@ -87,7 +87,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         recList.setLayoutManager(llm);
 
         //Check if recyclerView scrolled at top then set swipeRefreshLayout enable or not
-        recList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        recList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int topRowVerticalPosition =

@@ -22,7 +22,6 @@ import tuandn.com.newsrss.vnexpress.Rss;
 public class ListAdapter extends RecyclerView.Adapter<NewsHolder> {
     private Rss data;
     private Context mContext;
-    private Item news;
 
     public ListAdapter(Rss rss) {
         this.data = rss;
@@ -37,6 +36,7 @@ public class ListAdapter extends RecyclerView.Adapter<NewsHolder> {
 
     @Override
     public void onBindViewHolder(NewsHolder holder, int position) {
+        final Item news;
         news = data.getChannel().getItem().get(position);
         holder.tvNewsTitle.setText(Html.fromHtml(news.getTitle()));
         holder.tvNewsContent.setText(Html.fromHtml(news.getDescription()));
