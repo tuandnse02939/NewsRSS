@@ -81,10 +81,6 @@ public class MainActivity extends AppCompatActivity
         dataForNewsPaper.setListCategory(CATEGORY_VnExpress);
         dataForNewsPaper.setNewspaperName(VNEXPRESS);
         ivBanner.setBackground(getResources().getDrawable(R.drawable.banner_vnexpress));
-        viewPager.setAdapter(new NewsFragmentAdapter(getSupportFragmentManager(), this));
-        viewPager.getAdapter().notifyDataSetChanged();
-        viewPager.setCurrentItem(0);
-        tabLayout.setupWithViewPager(viewPager);
         mPreferencee = new SharedPreferenceManager(MainActivity.this);
         setupLayout(true);
 
@@ -214,13 +210,23 @@ public class MainActivity extends AppCompatActivity
         if(check){
             tabLayout.setVisibility(View.VISIBLE);
             viewPager.setVisibility(View.VISIBLE);
+            ivBanner.setVisibility(View.VISIBLE);
             webView.setVisibility(View.GONE);
             mPreferencee.saveBoolean(GlobalParams.READING_NEWS, false);
         } else {
             tabLayout.setVisibility(View.GONE);
             viewPager.setVisibility(View.GONE);
             webView.setVisibility(View.VISIBLE);
+            ivBanner.setVisibility(View.GONE);
             mPreferencee.saveBoolean(GlobalParams.READING_NEWS, true);
         }
+    }
+
+    @Override public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        viewPager.setAdapter(new NewsFragmentAdapter(getSupportFragmentManager(), this));
+        viewPager.getAdapter().notifyDataSetChanged();
+        viewPager.setCurrentItem(0);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

@@ -78,7 +78,7 @@ public class ListNewsAdapter implements ListAdapter{
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_task, null);
             holder = new ViewHolder();
-            holder.lyNewsItem = (RelativeLayout) convertView.findViewById(R.id.layout_news_item);
+//            holder.lyNewsItem = (RelativeLayout) convertView.findViewById(R.id.layout_news_item);
             holder.ivImage = (ImageView) convertView.findViewById(R.id.iv_news_image);
             holder.tvNewsTitle = (TextView) convertView.findViewById(R.id.tv_news_title);
             holder.tvNewsContent = (TextView) convertView.findViewById(R.id.tv_news_content);

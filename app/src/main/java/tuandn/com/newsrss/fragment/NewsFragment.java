@@ -1,27 +1,19 @@
 package tuandn.com.newsrss.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -31,11 +23,11 @@ import tuandn.com.newsrss.DataForNewsPaper;
 import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
 import tuandn.com.newsrss.adapter.ListAdapter;
+import tuandn.com.newsrss.adapter.RecyclerViewAdapter;
 import tuandn.com.newsrss.ultilities.GlobalParams;
 import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
 import tuandn.com.newsrss.vnexpress.ApiInterface;
-import tuandn.com.newsrss.vnexpress.Channel;
 import tuandn.com.newsrss.vnexpress.Item;
 import tuandn.com.newsrss.vnexpress.Rss;
 
@@ -61,7 +53,7 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FrameLayout frameLayout;
     private SharedPreferenceManager mPreferencee;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recList;
+    private RecyclerView recyclerView;
 
     @Nullable
     @Override
@@ -80,14 +72,15 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipeRefreshLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
 
 
-        recList = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        recList.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+//        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+//        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
         //Check if recyclerView scrolled at top then set swipeRefreshLayout enable or not
-        recList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int topRowVerticalPosition =
@@ -156,6 +149,12 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         }
     }
+
+//    @Override public void onEnterAnimationComplete() {
+//        super.getActivity().onEnterAnimationComplete();
+//        recyclerView.setAdapter(new ListAdapter(rss));
+//        recyclerView.scheduleLayoutAnimation();
+//    }
 
     private void loadListNews(){
         DataForNewsPaper dataForNewsPaper = DataForNewsPaper.getInstance();
@@ -323,7 +322,8 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         }
                         item.setDescription(description);
                     }
-                    recList.setAdapter(new ListAdapter(rss));
+                    recyclerView.setAdapter(new RecyclerViewAdapter(getContext(),rss));
+                    recyclerView.scheduleLayoutAnimation();
 //                    mAdapter = new ListNewsAdapter(getContext(), rss);
 //                    mLvNew.setAdapter(mAdapter);
                     if(swipeRefreshLayout.isRefreshing()){
@@ -346,4 +346,10 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             frameLayout.setVisibility(View.VISIBLE);
         }
     }
+
+//    @Override public void onEnterAnimationComplete() {
+//        super.onEnterAnimationComplete();
+//        setRecyclerAdapter(recyclerView);
+//        recyclerView.scheduleLayoutAnimation();
+//    }
 }

@@ -6,6 +6,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +24,7 @@ import tuandn.com.newsrss.vnexpress.Rss;
 public class ListAdapter extends RecyclerView.Adapter<NewsHolder> {
     private Rss data;
     private Context mContext;
+    private int lastPosition = -1;
 
     public ListAdapter(Rss rss) {
         this.data = rss;
@@ -64,10 +67,22 @@ public class ListAdapter extends RecyclerView.Adapter<NewsHolder> {
                 EventBus.getDefault().post(news.getLink());
             }
         });
+        setAnimation(holder.container, position);
     }
 
     @Override
     public int getItemCount() {
         return data.getChannel().getItem().size();
+    }
+
+    private void setAnimation(View viewToAnimate, int position)
+    {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mContext, android.R.anim.fade_out);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 }
