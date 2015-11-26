@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -24,6 +25,7 @@ import tuandn.com.newsrss.MainActivity;
 import tuandn.com.newsrss.R;
 import tuandn.com.newsrss.adapter.ListAdapter;
 import tuandn.com.newsrss.adapter.RecyclerViewAdapter;
+import tuandn.com.newsrss.adapter.RecyclerViewAdapter.OnItemClickListener;
 import tuandn.com.newsrss.ultilities.GlobalParams;
 import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
@@ -34,7 +36,7 @@ import tuandn.com.newsrss.vnexpress.Rss;
 /**
  * Created by Anh Trung on 11/9/2015.
  */
-public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,OnItemClickListener{
 
     public static final int NEWEST = 0;
     public static final int HEADLINE = 1;
@@ -322,10 +324,16 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         }
                         item.setDescription(description);
                     }
-                    recyclerView.setAdapter(new RecyclerViewAdapter(getContext(),rss));
+                    RecyclerViewAdapter viewAdapter = new RecyclerViewAdapter(getContext(),rss);
+                    viewAdapter.setOnItemClickListener(new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, Item news) {
+                            EventBus.getDefault().post(news.getLink());
+                        }
+                    });
+                    recyclerView.setAdapter(viewAdapter);
+
                     recyclerView.scheduleLayoutAnimation();
-//                    mAdapter = new ListNewsAdapter(getContext(), rss);
-//                    mLvNew.setAdapter(mAdapter);
                     if(swipeRefreshLayout.isRefreshing()){
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -347,9 +355,8 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-//    @Override public void onEnterAnimationComplete() {
-//        super.onEnterAnimationComplete();
-//        setRecyclerAdapter(recyclerView);
-//        recyclerView.scheduleLayoutAnimation();
-//    }
+    @Override
+    public void onItemClick(View view, Item news) {
+        EventBus.getDefault().post(news.getLink());
+    }
 }

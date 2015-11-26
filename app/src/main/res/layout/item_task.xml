@@ -4,12 +4,11 @@
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:foreground="@drawable/selectable_item_background">
 
     <RelativeLayout  android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout_news_item"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:id="@+id/layout_news_item">
 
         <ImageView
             android:layout_width="80dp"

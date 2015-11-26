@@ -81,12 +81,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     .centerCrop()
                     .into(holder.ivImage);
         }
-        holder.lyNewsItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(news.getLink());
-            }
-        });
         holder.itemView.setTag(news);
     }
 

@@ -22,13 +22,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import tuandn.com.newsrss.adapter.RecyclerViewAdapter;
+import tuandn.com.newsrss.adapter.RecyclerViewAdapter.OnItemClickListener;
 import tuandn.com.newsrss.fragment.NewsFragmentAdapter;
 import tuandn.com.newsrss.ultilities.GlobalParams;
 import tuandn.com.newsrss.ultilities.NetworkUlt;
 import tuandn.com.newsrss.ultilities.SharedPreferenceManager;
+import tuandn.com.newsrss.vnexpress.Item;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     public static String CATEGORY_VnExpress[] = {"Tin mới nhất","Thời sự", "Thế giới" ,"Kinh doanh"};
     public static String CATEGORY_Dantri[] = {"Trang chủ","Sức khỏe","Xã hội", "Giải trí", "Giáo dục", "Thể thao", "Thế giới", "Kinh doanh" };
