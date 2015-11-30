@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
@@ -43,41 +45,32 @@ public class NewsFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public static final int WORLD = 2;
     public static final int BUSINESS = 3;
 
-    private static NewsFragment instance;
-    private String[] news;
     private int position;
     private Call<Rss> call;
 
-//    private ListNewsAdapter mAdapter;
-//    private ListView mLvNew;
     private Rss rss;
-    private ProgressBar mProgress;
-    private FrameLayout frameLayout;
     private SharedPreferenceManager mPreferencee;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
+
+    @Bind(R.id.pbWaiting) ProgressBar mProgress;
+    @Bind(R.id.layout_list_news) FrameLayout frameLayout;
+    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.recycler_view) RecyclerView recyclerView;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_layout_news, container, false);
-//        mLvNew = (ListView) rootView.findViewById(android.R.id.list);
+        ButterKnife.bind(this,rootView);
 
         mPreferencee = new SharedPreferenceManager(getContext());
 
         rss = new Rss();
-        mProgress = (ProgressBar) rootView.findViewById(R.id.pbWaiting);
         mProgress.setVisibility(View.VISIBLE);
         mProgress.setProgress(100);
-        frameLayout = (FrameLayout) rootView.findViewById(R.id.layout_list_news);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeColors(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
 
-
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-//        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-//        llm.setOrientation(LinearLayoutManager.VERTICAL);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
